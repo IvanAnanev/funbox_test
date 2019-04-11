@@ -11,8 +11,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :awesome_elixir_parser, AwesomeElixirParser.Repo,
-  username: "postgres",
-  password: "postgres",
+  # username: "postgres",
+  # password: "postgres",
   database: "awesome_elixir_parser_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
