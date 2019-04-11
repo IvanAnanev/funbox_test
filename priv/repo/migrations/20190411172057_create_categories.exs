@@ -9,6 +9,6 @@ defmodule AwesomeElixirParser.Repo.Migrations.CreateCategories do
       timestamps()
     end
 
-    create index("categories", [:name], unique: true)
+    create unique_index(:categories, [:name])
   end
 end
