@@ -67,9 +67,27 @@ defmodule AwesomeElixirParser.AwesomesTest do
   describe "repositories" do
     alias AwesomeElixirParser.Awesomes.Repository
 
-    @valid_attrs %{days_from_last_commit: 42, description: "some description", link: "some link", name: "some name", stars: 42}
-    @update_attrs %{days_from_last_commit: 43, description: "some updated description", link: "some updated link", name: "some updated name", stars: 43}
-    @invalid_attrs %{days_from_last_commit: nil, description: nil, link: nil, name: nil, stars: nil}
+    @valid_attrs %{
+      days_from_last_commit: 42,
+      description: "some description",
+      link: "some link",
+      name: "some name",
+      stars: 42
+    }
+    @update_attrs %{
+      days_from_last_commit: 43,
+      description: "some updated description",
+      link: "some updated link",
+      name: "some updated name",
+      stars: 43
+    }
+    @invalid_attrs %{
+      days_from_last_commit: nil,
+      description: nil,
+      link: nil,
+      name: nil,
+      stars: nil
+    }
 
     def repository_fixture(attrs \\ %{}) do
       {:ok, repository} =
@@ -105,7 +123,10 @@ defmodule AwesomeElixirParser.AwesomesTest do
 
     test "update_repository/2 with valid data updates the repository" do
       repository = repository_fixture()
-      assert {:ok, %Repository{} = repository} = Awesomes.update_repository(repository, @update_attrs)
+
+      assert {:ok, %Repository{} = repository} =
+               Awesomes.update_repository(repository, @update_attrs)
+
       assert repository.days_from_last_commit == 43
       assert repository.description == "some updated description"
       assert repository.link == "some updated link"

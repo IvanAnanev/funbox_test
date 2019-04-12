@@ -11,9 +11,10 @@ defmodule AwesomeElixirParser.Application do
       # Start the Ecto repository
       AwesomeElixirParser.Repo,
       # Start the endpoint when the application starts
-      AwesomeElixirParserWeb.Endpoint
+      AwesomeElixirParserWeb.Endpoint,
       # Starts a worker by calling: AwesomeElixirParser.Worker.start_link(arg)
       # {AwesomeElixirParser.Worker, arg},
+      AwesomeElixirParser.AwesomeParser
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
