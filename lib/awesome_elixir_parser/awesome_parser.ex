@@ -1,6 +1,7 @@
 defmodule AwesomeElixirParser.AwesomeParser do
   use GenServer
   require Logger
+  alias AwesomeElixirParser.Awesomes
 
   ## init
 
@@ -69,12 +70,37 @@ defmodule AwesomeElixirParser.AwesomeParser do
   end
 
   defp save_to_db({:ok, parsed}) do
-    Logger.info("Parsed: #{inspect(parsed)}")
+    time_now = NaiveDateTime.utc_now()
+
+    repositories =
+      parsed
+      |> Enum.map(&handle_category(&1))
+
+    clear_not_actual(time_now)
+    repositories
+  end
+
+  defp handle_category(%{name: name, description: description, repositories: repositories}) do
+    {:ok, category} = Awesomes.create_or_update_category(%{name: name, description: description})
+
+    Enum.map(repositories, fn repository ->
+      handle_repository(Map.put(repository, :category_id, category.id))
+    end)
+  end
+
+  defp handle_repository(repository_attrs) do
+    {:ok, repository} = Awesomes.create_or_update_repository(repository_attrs)
+    repository
   end
 
   defp take_article_children(body) do
     [{_, _, children} | _] = Floki.find(body, "article")
     children
+  end
+
+  defp clear_not_actual(time) do
+    Awesomes.delete_not_actual_repositories(time)
+    Awesomes.delete_not_actual_categories(time)
   end
 
   # start parse from Actors category

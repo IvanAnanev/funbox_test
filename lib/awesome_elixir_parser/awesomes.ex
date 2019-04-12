@@ -70,7 +70,27 @@ defmodule AwesomeElixirParser.Awesomes do
   def update_category(%Category{} = category, attrs) do
     category
     |> Category.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update(force: true)
+  end
+
+  @doc """
+  Create or updates a category.
+
+  ## Examples
+
+      iex> create_or_update_category(%{field: new_value})
+      {:ok, %Category{}}
+
+      iex> create_or_update_category(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_or_update_category(%{name: name} = attrs) do
+    case Repo.get_by(Category, name: name) do
+      nil -> create_category(attrs)
+      category -> update_category(category, attrs)
+    end
   end
 
   @doc """
@@ -100,6 +120,21 @@ defmodule AwesomeElixirParser.Awesomes do
   """
   def change_category(%Category{} = category) do
     Category.changeset(category, %{})
+  end
+
+  @doc """
+  Delete not actual categories
+
+  ## Examples
+
+      iex> delete_not_actual_categories(timestamp)
+  """
+  def delete_not_actual_categories(timestamp) do
+    query =
+      from c in Category,
+        where: c.updated_at < ^timestamp
+
+    Repo.delete_all(query)
   end
 
   alias AwesomeElixirParser.Awesomes.Repository
@@ -166,7 +201,7 @@ defmodule AwesomeElixirParser.Awesomes do
   def update_repository(%Repository{} = repository, attrs) do
     repository
     |> Repository.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update(force: true)
   end
 
   @doc """
@@ -196,5 +231,39 @@ defmodule AwesomeElixirParser.Awesomes do
   """
   def change_repository(%Repository{} = repository) do
     Repository.changeset(repository, %{})
+  end
+
+  @doc """
+  Create or updates a repository.
+
+  ## Examples
+
+      iex> create_or_update_repository(%{field: new_value})
+      {:ok, %Category{}}
+
+      iex> create_or_update_repository(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_or_update_repository(%{name: name} = attrs) do
+    case Repo.get_by(Repository, name: name) do
+      nil -> create_repository(attrs)
+      repository -> update_repository(repository, attrs)
+    end
+  end
+
+  @doc """
+  Delete not actual repositories
+
+  ## Examples
+
+      iex> delete_not_actual_repositories(timestamp)
+  """
+  def delete_not_actual_repositories(timestamp) do
+    query =
+      from r in Repository,
+        where: r.updated_at < ^timestamp
+
+    Repo.delete_all(query)
   end
 end
