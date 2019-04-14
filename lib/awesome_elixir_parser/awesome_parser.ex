@@ -1,7 +1,7 @@
 defmodule AwesomeElixirParser.AwesomeParser do
   use GenServer
   require Logger
-  alias AwesomeElixirParser.Awesomes
+  alias AwesomeElixirParser.{Awesomes, StarsParser}
 
   ## init
 
@@ -12,7 +12,7 @@ defmodule AwesomeElixirParser.AwesomeParser do
   ## Callbacks
 
   def handle_continue(:init, state) do
-    # schedule()
+    schedule()
     parse()
 
     {:noreply, state}
@@ -25,8 +25,7 @@ defmodule AwesomeElixirParser.AwesomeParser do
     {:noreply, state}
   end
 
-  # 24 * 60 * 60_000
-  @once_daily 10_000
+  @once_daily 24 * 60 * 60_000
   defp schedule() do
     Process.send_after(self(), :reparse, @once_daily)
   end
@@ -35,8 +34,8 @@ defmodule AwesomeElixirParser.AwesomeParser do
     make_request()
     |> body_parse()
     |> save_to_db()
-
-    # clear_noactual()
+    |> parse_stars()
+    |> log()
   end
 
   @awesome_elixir_url "https://github.com/h4cc/awesome-elixir"
@@ -69,16 +68,32 @@ defmodule AwesomeElixirParser.AwesomeParser do
     |> parse_children()
   end
 
+  defp save_to_db({:error, _} = err), do: err
+
   defp save_to_db({:ok, parsed}) do
     time_now = NaiveDateTime.utc_now()
 
     repositories =
       parsed
       |> Enum.map(&handle_category(&1))
+      |> List.flatten()
 
     clear_not_actual(time_now)
-    repositories
+
+    {:ok, repositories}
   end
+
+  defp parse_stars({:error, _} = err), do: err
+
+  defp parse_stars({:ok, repositories}) do
+    repositories
+    |> Enum.each(fn repository -> StarsParser.parse(repository) end)
+
+    {:ok, repositories}
+  end
+
+  defp log({:error, message}), do: Logger.error(message)
+  defp log({:ok, _}), do: Logger.info("Awesome Elixir parsed!")
 
   defp handle_category(%{name: name, description: description, repositories: repositories}) do
     {:ok, category} = Awesomes.create_or_update_category(%{name: name, description: description})

@@ -10,14 +10,17 @@
   <body>
     <header>
       <section class="container">
+        <h1>Awesome Elixir</h1>
         <nav role="navigation">
           <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
+            <li><%= link("All", to: "/") %></li>
+            <li><%= link(">= 10", to: "/?min_stars=10") %></li>
+            <li><%= link(">= 50", to: "/?min_stars=50") %></li>
+            <li><%= link(">= 100", to: "/?min_stars=100") %></li>
+            <li><%= link(">= 500", to: "/?min_stars=500") %></li>
+            <li><%= link(">= 1000", to: "/?min_stars=1000") %></li>
           </ul>
         </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
       </section>
     </header>
     <main role="main" class="container">

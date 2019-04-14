@@ -17,7 +17,7 @@ defmodule AwesomeElixirParser.Awesomes.Repository do
   @doc false
   def changeset(repository, attrs) do
     repository
-    |> cast(attrs, [:name, :link, :description, :stars, :days_from_last_commit])
+    |> cast(attrs, [:name, :link, :description, :stars, :days_from_last_commit, :category_id])
     |> validate_required([:name, :link, :description])
     |> unique_constraint(:name)
     |> assoc_constraint(:category)

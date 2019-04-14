@@ -14,7 +14,8 @@ defmodule AwesomeElixirParser.Application do
       AwesomeElixirParserWeb.Endpoint,
       # Starts a worker by calling: AwesomeElixirParser.Worker.start_link(arg)
       # {AwesomeElixirParser.Worker, arg},
-      AwesomeElixirParser.AwesomeParser
+      AwesomeElixirParser.AwesomeParser,
+      AwesomeElixirParser.StarsParser
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

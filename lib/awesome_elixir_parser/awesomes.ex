@@ -7,6 +7,7 @@ defmodule AwesomeElixirParser.Awesomes do
   alias AwesomeElixirParser.Repo
 
   alias AwesomeElixirParser.Awesomes.Category
+  alias AwesomeElixirParser.Awesomes.Repository
 
   @doc """
   Returns the list of categories.
@@ -18,7 +19,42 @@ defmodule AwesomeElixirParser.Awesomes do
 
   """
   def list_categories do
-    Repo.all(Category)
+    repositories_query =
+      from r in Repository,
+        order_by: r.name
+
+    query =
+      from c in Category,
+        preload: [repositories: ^repositories_query],
+        order_by: c.name
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns the filtered list of categories.
+
+  ## Examples
+
+      iex> filtered_list_categories(10)
+      [%Category{}, ...]
+
+  """
+  def filtered_list_categories(min_stars) do
+    repositories_query =
+      from r in Repository,
+        where: r.stars >= ^min_stars,
+        order_by: r.name
+
+    query =
+      from c in Category,
+        left_join: r in assoc(c, :repositories),
+        where: r.stars >= ^min_stars,
+        distinct: c.name,
+        preload: [repositories: ^repositories_query],
+        order_by: c.name
+
+    Repo.all(query)
   end
 
   @doc """
@@ -136,8 +172,6 @@ defmodule AwesomeElixirParser.Awesomes do
 
     Repo.delete_all(query)
   end
-
-  alias AwesomeElixirParser.Awesomes.Repository
 
   @doc """
   Returns the list of repositories.
