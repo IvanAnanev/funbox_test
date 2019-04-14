@@ -1,5 +1,9 @@
 # AwesomeElixirParser
 
+deployed to heroku
+
+* <https://dry-inlet-70427.herokuapp.com/>
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
