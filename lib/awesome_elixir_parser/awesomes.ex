@@ -19,6 +19,19 @@ defmodule AwesomeElixirParser.Awesomes do
 
   """
   def list_categories do
+    Repo.all(Category)
+  end
+
+  @doc """
+  Returns the list of categories with preloaded repositories.
+
+  ## Examples
+
+      iex> list_categories_with_repositories()
+      [%Category{repositories: [%Repository{}]}, ...]
+
+  """
+  def list_categories_with_repositories do
     repositories_query =
       from r in Repository,
         order_by: r.name
@@ -32,15 +45,15 @@ defmodule AwesomeElixirParser.Awesomes do
   end
 
   @doc """
-  Returns the filtered list of categories.
+  Returns the filtered list of categories with preloaded repositories.
 
   ## Examples
 
       iex> filtered_list_categories(10)
-      [%Category{}, ...]
+      [%Category{repositories: [%Repository{}]}, ...]
 
   """
-  def filtered_list_categories(min_stars) do
+  def filtered_list_categories_with_repositories(min_stars) do
     repositories_query =
       from r in Repository,
         where: r.stars >= ^min_stars,
