@@ -8,12 +8,8 @@ defmodule AwesomeElixirParser.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Start the Ecto repository
       AwesomeElixirParser.Repo,
-      # Start the endpoint when the application starts
       AwesomeElixirParserWeb.Endpoint,
-      # Starts a worker by calling: AwesomeElixirParser.Worker.start_link(arg)
-      # {AwesomeElixirParser.Worker, arg},
       AwesomeElixirParser.AwesomeParser,
       AwesomeElixirParser.StarsParser
     ]
